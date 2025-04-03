@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import navJson from './nav.json';
 
 interface Navigation {
-  inde: number;
+  index: number;
   path: string;
   label: string;
   searchValue: string;

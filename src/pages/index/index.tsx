@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { useRecoilValueLoadable } from 'recoil';
 import { imageData } from '@/recoil/selectors/imageSelectors';
 
 import CommonHeader from '@/components/common/header/CommonHeader';
@@ -10,18 +10,24 @@ import ST from './styles/index.module.scss';
 import Card from './components/Card';
 import { CardDTO } from './types/card';
 import DetailDialog from '@/components/common/dialog/DetailDialog';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const index = () => {
-  const imageSelector = useRecoilValue(imageData);
+  const imageSelector = useRecoilValueLoadable(imageData);
   const [imgData, setImgData] = useState<CardDTO>();
   const [open, setOpen] = useState<boolean>(false); 
 
-  const CARD_LIST = imageSelector.data.results.map((card: CardDTO) => {
-    return (
-      <Card data={card} key={card.id} handleDialog={setOpen} handleSetData={setImgData}/>
-    )
-  })
+  const CARD_LIST = useMemo(() => {
+    console.log(imageSelector);
+    if (imageSelector.state === 'hasValue') {
+      const result = imageSelector.map((card: CardDTO) => {
+          return <Card data={card} key={card.id} handleDialog={setOpen} handleSetData={setImgData}/>
+      })
+      return result;
+    } else {
+      return <div>loading...</div>
+    }
+  }, [imageSelector]);
 
   return (
     <div className={ST.page}>
@@ -43,7 +49,7 @@ const index = () => {
         </div>
       </div>
       <CommonFooter />
-      {open && <DetailDialog data={imgData}/>}
+      {open && <DetailDialog data={imgData} handleDialog={setOpen}/>}
     </div>
   )
 }

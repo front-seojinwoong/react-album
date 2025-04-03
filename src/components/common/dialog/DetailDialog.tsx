@@ -1,11 +1,15 @@
-import { CardDTO } from '@/pages/index/types/card';
+import { CardDTO, Tag } from '@/pages/index/types/card';
 import ST from './DetailDialog.module.scss';
 
 interface Props {
   data: CardDTO;
+  handleDialog: (eventValue: boolean) => void;
 }
 
-const DetailDialog = ({data}: Props) => {
+const DetailDialog = ({data, handleDialog}: Props) => {
+  const closeDialog = () => {
+    handleDialog(false);
+  }
 
   return (
     <div className={ST.container}>
@@ -49,8 +53,9 @@ const DetailDialog = ({data}: Props) => {
             </div>
           </div>
           <div className={ST.tagBox}>
-            <input type="text" />
-            <div className={ST.tagBox__tag}></div>
+            {data.tags.map((tag: Tag)=> {
+              return (<div className={ST.tagBox__tag} key={tag.title}>{tag.title}</div>)
+            })}
           </div>
         </div>
       </div>
